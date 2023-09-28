@@ -14,7 +14,7 @@ def get_score(
     gender=None,
     first_name=None,
     last_name=None
-):
+) -> float:
     score = 0
     if phone:
         score += 1.5
@@ -27,5 +27,5 @@ def get_score(
     return score
 
 
-def get_interests(store, cid):
+def get_interests(store, cid) -> list[str]:
     return random.sample(INTERESTS, 2)

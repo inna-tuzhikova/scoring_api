@@ -1,34 +1,114 @@
+import datetime
+import hashlib
 import json
+import logging
 import uuid
 from http.server import BaseHTTPRequestHandler
-import logging
-import hashlib
-import datetime
 
-from scoring_api.api.constants import (
-    ADMIN_SALT, SALT, OK, BAD_REQUEST,
-    INTERNAL_ERROR, NOT_FOUND, ERRORS
+from scoring_api.api.api import (
+    ClientsInterestsRequest,
+    MethodRequest,
+    OnlineScoreRequest,
 )
+from scoring_api.api.constants import (
+    ADMIN_SALT,
+    BAD_REQUEST,
+    ERRORS,
+    FORBIDDEN,
+    INTERNAL_ERROR,
+    INVALID_REQUEST,
+    NOT_FOUND,
+    OK,
+    SALT,
+)
+from scoring_api.api.scoring import get_interests, get_score
 
 logger = logging.getLogger(__name__)
 
 
-def check_auth(request):
+def check_auth(request: MethodRequest):
     if request.is_admin:
         digest = hashlib.sha512(
-            datetime.datetime.now().strftime('%Y%m%d%H') + ADMIN_SALT
+            (datetime.datetime.now().strftime('%Y%m%d%H') + ADMIN_SALT).encode()
         ).hexdigest()
     else:
         digest = hashlib.sha512(
-            request.account + request.login + SALT
+            (request.account + request.login + SALT).encode()
         ).hexdigest()
     if digest == request.token:
         return True
     return False
 
 
-def method_handler(request, ctx, store):
-    response, code = None, None
+def method_handler(request: dict, ctx: dict, store):
+    """Dispatches request processing to specific handlers"""
+    response, code = None, OK
+    try:
+        method_request = MethodRequest(**request['body'])
+    except ValueError as e:
+        response, code = str(e), INVALID_REQUEST
+    else:
+        if check_auth(method_request):
+            if method_request.method == 'online_score':
+                response, code = online_score_handler(
+                    method_request, ctx, store
+                )
+            elif method_request.method == 'clients_interests':
+                response, code = clients_interests_handler(
+                    method_request, ctx, store
+                )
+            else:
+                code = NOT_FOUND
+        else:
+            code = FORBIDDEN
+    return response, code
+
+
+def online_score_handler(method_request: MethodRequest, ctx: dict, store):
+    """Processes client scoring request"""
+    response, code = None, OK
+    try:
+        request = OnlineScoreRequest(**method_request.arguments)
+    except ValueError as e:
+        response, code = str(e), INVALID_REQUEST
+    else:
+        ctx.update(
+            has=list(method_request.arguments.keys())
+        )
+        if method_request.is_admin:
+            response = dict(
+                score=42
+            )
+        else:
+            response = dict(
+                score=get_score(
+                    store=store,
+                    phone=request.phone,
+                    email=request.email,
+                    birthday=request.birthday,
+                    gender=request.gender,
+                    first_name=request.first_name,
+                    last_name=request.last_name
+                )
+            )
+    return response, code
+
+
+def clients_interests_handler(method_request: MethodRequest, ctx: dict, store):
+    """Processes client interests request"""
+    response, code = None, OK
+    try:
+        request = ClientsInterestsRequest(**method_request.arguments)
+    except ValueError as e:
+        response, code = str(e), INVALID_REQUEST
+    else:
+        ctx.update(
+            nclients=len(request.client_ids)
+        )
+        response = {
+            client_id: get_interests(store, client_id)
+            for client_id in request.client_ids
+        }
     return response, code
 
 
@@ -60,9 +140,9 @@ class MainHTTPHandler(BaseHTTPRequestHandler):
             if path in self.router:
                 try:
                     response, code = self.router[path](
-                        {'body': request, 'headers': self.headers},
-                        context,
-                        self.store
+                        request={'body': request, 'headers': self.headers},
+                        ctx=context,
+                        store=self.store
                     )
                 except Exception as e:
                     logger.exception('Unexpected error: %s', e)
@@ -85,5 +165,5 @@ class MainHTTPHandler(BaseHTTPRequestHandler):
             )
         context.update(r)
         logger.info(context)
-        self.wfile.write(json.dumps(r))
+        self.wfile.write(json.dumps(r).encode())
         return

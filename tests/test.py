@@ -1,6 +1,6 @@
-import hashlib
 import datetime
 import functools
+import hashlib
 import unittest
 
 from scoring_api.api import constants, handler
@@ -170,7 +170,9 @@ class TestSuite(unittest.TestCase):
         response, code = self.get_response(request)
         self.assertEqual(constants.OK, code, arguments)
         score = response.get('score')
-        self.assertTrue(isinstance(score, (int, float)) and score >= 0, arguments)
+        self.assertTrue(
+            isinstance(score, (int, float)) and score >= 0, arguments
+        )
         self.assertEqual(sorted(self.context['has']), sorted(arguments.keys()))
 
     def test_ok_score_admin_request(self):

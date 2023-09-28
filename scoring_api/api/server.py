@@ -3,7 +3,6 @@ from http.server import HTTPServer
 
 from scoring_api.api.handler import MainHTTPHandler
 
-
 logger = logging.getLogger(__name__)
 
 
