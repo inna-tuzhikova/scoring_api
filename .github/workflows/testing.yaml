@@ -63,4 +63,4 @@ jobs:
             - name: Run tests
               run: |
                   source .venv/bin/activate
-                  python -m unittest discover tests/ -v
+                  pytest tests

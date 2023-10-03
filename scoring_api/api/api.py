@@ -30,7 +30,8 @@ class Field:
         if not isinstance(target_type, tuple):
             target_type = target_type,
         else:
-            assert len(target_type)
+            if not len(target_type):
+                raise ValueError('Specify at least one field type')
         self._target_types = target_type
 
     def __get__(self, instance, owner):
@@ -154,6 +155,8 @@ class PhoneField(Field):
 
     def validate(self, value: Any) -> None:
         phone = str(value)
+        if not all(c.isnumeric() for c in phone):
+            raise ValueError('phone should consist of digits')
         if len(phone) != self._PHONE_LENGTH:
             raise ValueError('phone should have 11 digits')
         if phone[0] != self._FIRST_DIGIT:
