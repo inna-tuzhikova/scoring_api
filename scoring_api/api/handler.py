@@ -27,7 +27,7 @@ from scoring_api.api.store import KeyValueStore, get_store
 logger = logging.getLogger(__name__)
 
 
-def check_auth(request: MethodRequest):
+def check_auth(request: MethodRequest) -> bool:
     if request.is_admin:
         digest = hashlib.sha512(
             (datetime.datetime.now().strftime('%Y%m%d%H') + ADMIN_SALT).encode()
@@ -41,7 +41,11 @@ def check_auth(request: MethodRequest):
     return False
 
 
-def method_handler(request: dict, ctx: dict, store: KeyValueStore):
+def method_handler(
+    request: dict,
+    ctx: dict,
+    store: KeyValueStore
+) -> tuple[dict | str, int]:
     """Dispatches request processing to specific handlers"""
     response, code = None, OK
     try:
@@ -69,7 +73,7 @@ def online_score_handler(
     method_request: MethodRequest,
     ctx: dict,
     store: KeyValueStore
-):
+) -> tuple[dict | str, int]:
     """Processes client scoring request"""
     response, code = None, OK
     try:
@@ -103,7 +107,7 @@ def clients_interests_handler(
     method_request: MethodRequest,
     ctx: dict,
     store: KeyValueStore
-):
+) -> tuple[dict | str, int]:
     """Processes client interests request"""
     response, code = None, OK
     try:
@@ -127,10 +131,10 @@ class MainHTTPHandler(BaseHTTPRequestHandler):
     }
     store = get_store()
 
-    def get_request_id(self, headers):
+    def get_request_id(self, headers) -> str:
         return headers.get('HTTP_X_REQUEST_ID', uuid.uuid4().hex)
 
-    def do_POST(self):
+    def do_POST(self) -> None:
         response, code = {}, OK
         context = {'request_id': self.get_request_id(self.headers)}
         request = None
