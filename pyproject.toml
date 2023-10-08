@@ -9,6 +9,7 @@ packages = [{include = "scoring_api"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+redis = "^5.0.1"
 
 
 [tool.poetry.group.dev.dependencies]
