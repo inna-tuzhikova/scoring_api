@@ -1,7 +1,7 @@
 import pytest
+from fixtures import auth_invalid_requests, method_invalid_requests
 
 from scoring_api.api import constants
-from fixtures import auth_invalid_requests, method_invalid_requests
 
 
 def test_empty_request(get_response):

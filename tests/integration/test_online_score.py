@@ -1,6 +1,6 @@
 import pytest
-
 from fixtures import online_score_invalid_requests, online_score_valid_requests
+
 from scoring_api.api import constants
 
 

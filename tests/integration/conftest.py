@@ -1,13 +1,13 @@
 import hashlib
-from datetime import datetime
-from typing import Generator, Callable
 import json
+from datetime import datetime
+from typing import Callable, Generator
 
 import pytest
 
 from scoring_api.api import constants
-from scoring_api.api.store import get_store, KeyValueStore
 from scoring_api.api.handler import method_handler
+from scoring_api.api.store import KeyValueStore, get_store
 
 
 @pytest.fixture

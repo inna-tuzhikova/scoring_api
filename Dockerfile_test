@@ -9,4 +9,4 @@ RUN poetry install --no-root --no-directory
 COPY . .
 RUN poetry install
 
-CMD ["pytest", "tests/"]
+CMD ["sh", "-c", "flake8 scoring_api tests ; isort scoring_api tests -c ; pytest tests"]
