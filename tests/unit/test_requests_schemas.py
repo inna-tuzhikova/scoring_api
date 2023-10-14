@@ -14,7 +14,7 @@ from scoring_api.api.api import (
     dict(account=None, login=None, token=None, arguments={3: 4}, method=''),
     dict(login=None, token='token', arguments=None, method=''),
 ])
-def test_valid_method_request(request_dict):
+def test_valid_method_request(request_dict: dict):
     MethodRequest(**request_dict)
 
 
@@ -25,7 +25,7 @@ def test_valid_method_request(request_dict):
     dict(account=None, login='None', token='', method=''),
     dict(login=67, method=''),
 ])
-def test_invalid_method_request(request_dict):
+def test_invalid_method_request(request_dict: dict):
     with pytest.raises(ValueError):
         MethodRequest(**request_dict)
 
@@ -36,7 +36,7 @@ def test_invalid_method_request(request_dict):
     dict(client_ids=[2, 3], date=None),
     dict(client_ids=[4, 5]),
 ])
-def test_valid_clients_interests_request(request_dict):
+def test_valid_clients_interests_request(request_dict: dict):
     ClientsInterestsRequest(**request_dict)
 
 
@@ -47,7 +47,7 @@ def test_valid_clients_interests_request(request_dict):
     dict(date=''),
     dict(client_ids=[1, 2], date=[1, 2]),
 ])
-def test_invalid_clients_interests_request(request_dict):
+def test_invalid_clients_interests_request(request_dict: dict):
     with pytest.raises(ValueError):
         ClientsInterestsRequest(**request_dict)
 
@@ -73,7 +73,7 @@ def test_invalid_clients_interests_request(request_dict):
     ),
 
 ])
-def test_valid_online_score_request(request_dict):
+def test_valid_online_score_request(request_dict: dict):
     OnlineScoreRequest(**request_dict)
 
 
@@ -104,6 +104,6 @@ def test_valid_online_score_request(request_dict):
         birthday='12.12.2000', gender='1'
     ),
 ])
-def test_invalid_online_score_request(request_dict):
+def test_invalid_online_score_request(request_dict: dict):
     with pytest.raises(ValueError):
         OnlineScoreRequest(**request_dict)

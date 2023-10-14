@@ -1,3 +1,5 @@
+from typing import Callable
+
 import pytest
 from fixtures import (
     clients_interests_invalid_requests,
@@ -9,9 +11,9 @@ from scoring_api.api import constants
 
 @pytest.mark.parametrize('arguments', clients_interests_invalid_requests)
 def test_invalid_interests_request(
-    arguments,
-    get_response_with_store_preset,
-    set_valid_auth
+    arguments: dict,
+    get_response_with_store_preset: Callable,
+    set_valid_auth: Callable
 ):
     request = {
         'account': 'horns&hoofs',
@@ -27,10 +29,10 @@ def test_invalid_interests_request(
 
 @pytest.mark.parametrize('arguments', clients_interests_valid_requests)
 def test_ok_interests_request(
-    arguments,
-    get_response_with_store_preset,
-    set_valid_auth,
-    context
+    arguments: dict,
+    get_response_with_store_preset: Callable,
+    set_valid_auth: Callable,
+    context: dict
 ):
     request = {
         'account': 'horns&hoofs',

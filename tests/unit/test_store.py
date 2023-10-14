@@ -8,7 +8,11 @@ from scoring_api.api.store import KeyValueStore
     ('uid:0', '666'),
     ('uid:1', '777'),
 ])
-def test_cache_get_existing_key(key, value, store_with_presets: KeyValueStore):
+def test_cache_get_existing_key(
+    key: str,
+    value: str,
+    store_with_presets: KeyValueStore
+):
     result = store_with_presets.cache_get(key)
     assert result == value
 
@@ -17,12 +21,15 @@ def test_cache_get_existing_key(key, value, store_with_presets: KeyValueStore):
     'non_existing_key_1',
     'non_existing_key_2'
 ])
-def test_cache_get_non_existing_key(non_existing_key, store):
+def test_cache_get_non_existing_key(
+    non_existing_key: str,
+    store: KeyValueStore
+):
     result = store.cache_get(non_existing_key)
     assert result is None
 
 
-def test_cache_set_non_existing_key(store):
+def test_cache_set_non_existing_key(store: KeyValueStore):
     result = store.cache_get('key')
     assert result is None
     store.cache_set('key', '123', 1)
@@ -30,7 +37,7 @@ def test_cache_set_non_existing_key(store):
     assert result == '123'
 
 
-def test_cache_set_existing_key(store_with_presets):
+def test_cache_set_existing_key(store_with_presets: KeyValueStore):
     result = store_with_presets.cache_get('uid:0')
     assert result == '666'
     store_with_presets.cache_set('uid:0', '6666', 1)
@@ -38,7 +45,7 @@ def test_cache_set_existing_key(store_with_presets):
     assert result == '6666'
 
 
-def test_cache_lost_connection(store_with_presets, monkeypatch):
+def test_cache_lost_connection(store_with_presets: KeyValueStore, monkeypatch):
     def redis_get_with_connection_error(*args, **kwargs):
         raise redis.exceptions.ConnectionError
 
@@ -48,7 +55,10 @@ def test_cache_lost_connection(store_with_presets, monkeypatch):
     assert result is None
 
 
-def test_cache_get_retries_on_connection_lost(monkeypatch, store_with_presets):
+def test_cache_get_retries_on_connection_lost(
+    monkeypatch,
+    store_with_presets: KeyValueStore
+):
     retries = [3]
     original_send = redis.Connection.send_command
 
@@ -70,7 +80,11 @@ def test_cache_get_retries_on_connection_lost(monkeypatch, store_with_presets):
     ('uid:0', '666'),
     ('uid:1', '777'),
 ])
-def test_get_existing_key(key, value, store_with_presets):
+def test_get_existing_key(
+    key: str,
+    value: str,
+    store_with_presets: KeyValueStore
+):
     result = store_with_presets.get(key)
     assert result == value
 
@@ -79,12 +93,12 @@ def test_get_existing_key(key, value, store_with_presets):
     'non_existing_key_1',
     'non_existing_key_2'
 ])
-def test_get_non_existing_key(non_existing_key, store):
+def test_get_non_existing_key(non_existing_key: str, store: KeyValueStore):
     result = store.get(non_existing_key)
     assert result is None
 
 
-def test_set_non_existing_key(store):
+def test_set_non_existing_key(store: KeyValueStore):
     result = store.get('key')
     assert result is None
     store.set('key', '123')
@@ -92,7 +106,7 @@ def test_set_non_existing_key(store):
     assert result == '123'
 
 
-def test_set_existing_key(store_with_presets):
+def test_set_existing_key(store_with_presets: KeyValueStore):
     result = store_with_presets.get('uid:0')
     assert result == '666'
     store_with_presets.set('uid:0', '6666')
@@ -100,7 +114,7 @@ def test_set_existing_key(store_with_presets):
     assert result == '6666'
 
 
-def test_get_lost_connection(store_with_presets, monkeypatch):
+def test_get_lost_connection(store_with_presets: KeyValueStore, monkeypatch):
     def redis_get_with_connection_error(*args, **kwargs):
         raise redis.exceptions.ConnectionError
 
@@ -110,7 +124,10 @@ def test_get_lost_connection(store_with_presets, monkeypatch):
         store_with_presets.get('uid:0')
 
 
-def test_get_retries_on_connection_lost(monkeypatch, store_with_presets):
+def test_get_retries_on_connection_lost(
+    monkeypatch,
+    store_with_presets: KeyValueStore
+):
     retries = [3]
     original_send = redis.Connection.send_command
 
