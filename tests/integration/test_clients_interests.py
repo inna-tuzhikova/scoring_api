@@ -10,7 +10,7 @@ from scoring_api.api import constants
 @pytest.mark.parametrize('arguments', clients_interests_invalid_requests)
 def test_invalid_interests_request(
     arguments,
-    get_response_with_interests_preset,
+    get_response_with_store_preset,
     set_valid_auth
 ):
     request = {
@@ -20,7 +20,7 @@ def test_invalid_interests_request(
         'arguments': arguments
     }
     set_valid_auth(request)
-    response, code = get_response_with_interests_preset(request)
+    response, code = get_response_with_store_preset(request)
     assert code == constants.INVALID_REQUEST
     assert len(response) > 0
 
@@ -28,7 +28,7 @@ def test_invalid_interests_request(
 @pytest.mark.parametrize('arguments', clients_interests_valid_requests)
 def test_ok_interests_request(
     arguments,
-    get_response_with_interests_preset,
+    get_response_with_store_preset,
     set_valid_auth,
     context
 ):
@@ -39,7 +39,7 @@ def test_ok_interests_request(
         'arguments': arguments
     }
     set_valid_auth(request)
-    response, code = get_response_with_interests_preset(request)
+    response, code = get_response_with_store_preset(request)
     assert code == constants.OK, code
     assert len(arguments['client_ids']) == len(response)
     assert all(

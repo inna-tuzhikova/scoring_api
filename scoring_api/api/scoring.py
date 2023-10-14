@@ -27,7 +27,7 @@ def get_score(
     # fallback to heavy calculation in case of cache miss
     score = store.cache_get(key) or 0
     if score:
-        return score
+        return float(score)
     if phone:
         score += 1.5
     if email:

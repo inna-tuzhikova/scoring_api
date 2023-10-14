@@ -64,20 +64,23 @@ def get_response(
 
 
 @pytest.fixture(scope='function')
-def store_with_interests_preset() -> Generator[KeyValueStore, None, None]:
+def store_with_presets() -> Generator[KeyValueStore, None, None]:
     key_value_store = get_store()
     key_value_store.set('i:0', json.dumps(['a']))
     key_value_store.set('i:1', json.dumps(['a', 'b']))
     key_value_store.set('i:2', json.dumps(['c', 'd']))
+
+    key_value_store.set('uid:0', '666')
+    key_value_store.set('uid:1', '777')
     yield key_value_store
     key_value_store.flush()
 
 
 @pytest.fixture(scope='function')
-def get_response_with_interests_preset(
+def get_response_with_store_preset(
     headers: dict,
     context: dict,
-    store_with_interests_preset: KeyValueStore
+    store_with_presets: KeyValueStore
 ) -> Callable[[dict], tuple[dict | str, int]]:
     def response(request: dict) -> tuple[dict | str, int]:
         return method_handler(
@@ -86,6 +89,6 @@ def get_response_with_interests_preset(
                 headers=headers
             ),
             ctx=context,
-            store=store_with_interests_preset
+            store=store_with_presets
         )
     return response
