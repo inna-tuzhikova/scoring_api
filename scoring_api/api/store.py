@@ -21,7 +21,7 @@ class KeyValueStore:
 
 
 class RedisStorage(KeyValueStore):
-    def __init__(self, host: str = 'localhost', port: int = 6379):
+    def __init__(self, host: str = 'redis', port: int = 6379):
         self._redis = redis.Redis(
             host=host,
             port=port,
