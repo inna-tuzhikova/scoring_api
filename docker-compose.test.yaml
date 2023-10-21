@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  service_test:
+    container_name: "scoring_api"
+    image: scoring_api
+    build:
+      context: .
+      dockerfile: Dockerfile_test
+    ports:
+      - "8082:8082"
+    environment:
+      PYTHONUNBUFFERED: 1
+      SERVICE_HOST: "0.0.0.0"
+      SERVICE_PORT: 8082
+    networks:
+        - custom
+    depends_on:
+        - redis
+  redis:
+    image: redis:latest
+    command: redis-server
+    volumes:
+      - redis:/var/lib/redis
+      - redis-config:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    networks:
+      - custom
+
+volumes:
+  redis:
+  redis-config:
+
+networks:
+  custom:
+    driver: bridge

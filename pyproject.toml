@@ -9,11 +9,13 @@ packages = [{include = "scoring_api"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+redis = "^5.0.1"
 
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "6.1.0"
 isort = "5.12.0"
+pytest = "7.4.2"
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,0 +1,12 @@
+FROM python:3.10-slim as base
+
+WORKDIR /app
+
+COPY pyproject.toml poetry.lock /app/
+RUN pip install poetry
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-root --no-directory
+COPY . .
+RUN poetry install
+
+CMD ["sh", "-c", "flake8 scoring_api tests ; isort scoring_api tests -c ; pytest tests"]

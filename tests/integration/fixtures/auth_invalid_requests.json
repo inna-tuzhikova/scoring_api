@@ -1,0 +1,23 @@
+[
+  {
+    "account": "horns&hoofs",
+    "login": "h&f",
+    "method": "online_score",
+    "token": "",
+    "arguments": {}
+  },
+  {
+    "account": "horns&hoofs",
+    "login": "h&f",
+    "method": "online_score",
+    "token": "sdd",
+    "arguments": {}
+  },
+  {
+    "account": "horns&hoofs",
+    "login": "admin",
+    "method": "online_score",
+    "token": "",
+    "arguments": {}
+  }
+]
